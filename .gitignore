@@ -1,0 +1,10 @@
+Debug/
+Release/
+assimp/
+*.suo
+*.pdb
+*.sdf
+*.opensdf
+*.exe
+*.dll
+*.user
