@@ -8,7 +8,7 @@
 
 #include "geomalgorithms.h"
 
-static const float kMaxDimCM    = 50.f;  // Maximum dimension of the output in centimetres
+static const float kMaxDimCM    = 100.f; // Maximum dimension of the output in centimetres
 static const float kBlockSizeCM = 1.27f; // Block size in centimetres (0.5in = 0.0127m)
 static const int   kStopNum     = 0;     // Only make this many cubes (faster for debug)
 
@@ -304,8 +304,14 @@ int main(int argc, char* argv[])
         // If it intersects, we want a block here...
         // Otherwise, we want no block here, so just continue...
 
-        std::cout << "Finished " << ++iter << " of " << total << " iterations" << std::endl;
-        std::cout << cube_locs.size() << " cubes" << std::endl;
+        //std::cout << "Finished " << ++iter << " of " << total << " iterations" << std::endl;
+        //std::cout << cube_locs.size() << " cubes" << std::endl;
+        static int perc = -1;
+        int this_perc = ++iter * 100 / total;
+        if (this_perc != perc) {
+          std::cout << this_perc << "% done with " << cube_locs.size() << " cubes" << std::endl;
+          perc = this_perc;
+        }
 
         // Don't do it all if we request to stop short...
         if (kStopNum && cube_locs.size() >= kStopNum) {
