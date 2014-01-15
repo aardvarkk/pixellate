@@ -231,9 +231,29 @@ int main(int argc, char* argv[])
         rnx.P0 = pt;
         rnx.P1 = pt + Point(-1, 0, 0);
 
+        Ray rpy;
+        rpy.P0 = pt;
+        rpy.P1 = pt + Point(0, +1, 0);
+
+        Ray rny;
+        rny.P0 = pt;
+        rny.P1 = pt + Point(0, -1, 0);
+
+        Ray rpz;
+        rpz.P0 = pt;
+        rpz.P1 = pt + Point(0, 0, +1);
+
+        Ray rnz;
+        rnz.P0 = pt;
+        rnz.P1 = pt + Point(0, 0, -1);
+
         // Go through ALL triangles in the model!
         int ray_intersects_px = 0;
         int ray_intersects_nx = 0;
+        int ray_intersects_py = 0;
+        int ray_intersects_ny = 0;
+        int ray_intersects_pz = 0;
+        int ray_intersects_nz = 0;
 
         for (auto t : triangles) {
           // Calculate a ray from this point (does direction matter?)
@@ -248,14 +268,34 @@ int main(int argc, char* argv[])
           if (intersects_nx > 0) {
             ++ray_intersects_nx;
           }
+          auto intersects_py = intersect3D_RayTriangle(rpy, t, &intersection_pt);
+          if (intersects_py > 0) {
+            ++ray_intersects_py;
+          }
+          auto intersects_ny = intersect3D_RayTriangle(rny, t, &intersection_pt);
+          if (intersects_ny > 0) {
+            ++ray_intersects_ny;
+          }
+          auto intersects_pz = intersect3D_RayTriangle(rpz, t, &intersection_pt);
+          if (intersects_pz > 0) {
+            ++ray_intersects_pz;
+          }
+          auto intersects_nz = intersect3D_RayTriangle(rnz, t, &intersection_pt);
+          if (intersects_nz > 0) {
+            ++ray_intersects_nz;
+          }
         }
 
         // If we have an odd number of intersections, we should put a cube around this point
         // as it should be "inside" the model
         // Try checking rays in multiple directions for safety
         if (
-          (ray_intersects_px % 2 != 0) && 
-          (ray_intersects_nx % 2 != 0)
+          ((ray_intersects_px % 2 != 0) && 
+          (ray_intersects_nx % 2 != 0)) ||
+          ((ray_intersects_py % 2 != 0) && 
+          (ray_intersects_ny % 2 != 0)) ||
+          ((ray_intersects_pz % 2 != 0) && 
+          (ray_intersects_nz % 2 != 0))
           ) {
           cube_locs.push_back(pt);
           //add_cube(px, pt, kBlockSizeCM);
